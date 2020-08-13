@@ -58,7 +58,7 @@ func main() {
 	// Simulating dice has got to be the most inefficient way to select
 	// random words from a list
 
-	const passPhraseLength = 60000
+	const passPhraseLength = 6
 
 	dwMap, err := parseWordList("wordlist.txt")
 	if err != nil {
