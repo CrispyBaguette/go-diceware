@@ -3,12 +3,16 @@ package main
 import (
 	"bufio"
 	crand "crypto/rand"
+	"flag"
 	"log"
 	"math/big"
 	"os"
 	"strings"
 
 	"fmt"
+
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 func dieThrow(sides *big.Int) (*big.Int, error) {
@@ -58,16 +62,23 @@ func main() {
 	// Simulating dice has got to be the most inefficient way to select
 	// random words from a list
 
-	const passPhraseLength = 6
+	viper.SetEnvPrefix("diceware")
+	viper.BindEnv("length")
+	viper.BindEnv("wordList")
+	flag.Int("length", 6, "length of passphrase")
+	flag.String("wordlist", "wordlist.txt", "die-throw indexed wordlist")
+	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
+	pflag.Parse()
+	viper.BindPFlags(pflag.CommandLine)
 
-	dwMap, err := parseWordList("wordlist.txt")
+	dwMap, err := parseWordList(viper.GetString("wordlist"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	passPhrase := make([]string, 0)
 
-	for i := 0; i < passPhraseLength; i++ {
+	for i := 0; i < viper.GetInt("length"); i++ {
 		key, err := diceWordKey()
 		if err != nil {
 			log.Fatal(err)
