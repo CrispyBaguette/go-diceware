@@ -76,18 +76,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	passPhrase := make([]string, 0)
+	passPhraseLength := viper.GetInt("length")
 
-	for i := 0; i < viper.GetInt("length"); i++ {
+	passPhrase := make([]string, passPhraseLength)
+
+	for i := 0; i < passPhraseLength; i++ {
 		key, err := diceWordKey()
 		if err != nil {
 			log.Fatal(err)
 		}
-		passPhrase = append(passPhrase, dwMap[key])
+		passPhrase[i] = dwMap[key]
 	}
 
-	for _, v := range passPhrase {
-		fmt.Printf("%v ", v)
-	}
-	fmt.Print("\n")
+	fmt.Println(strings.Trim(fmt.Sprint(passPhrase), "[]"))
 }
